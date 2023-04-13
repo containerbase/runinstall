@@ -4,9 +4,11 @@ const {
 } = require("renovate/dist/util/exec/containerbase");
 const hostRules = require("renovate/dist/util/host-rules");
 
+const pipenv = require("./tools/pipenv");
 const poetry = require("./tools/poetry");
 
 const tools = {
+  pipenv,
   poetry,
 };
 

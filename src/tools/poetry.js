@@ -19,6 +19,7 @@ async function getToolConstraints() {
     { toolName: "python", constraint: await detectPythonVersion() },
     { toolName: "poetry", constraint: await detectPoetryVersion() },
   ];
+  console.log(toolConstraints);
   return toolConstraints;
 }
 

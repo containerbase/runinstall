@@ -1,5 +1,5 @@
 # renovate: datasource=docker depName=ghcr.io/containerbase/base
-ARG CONTAINERBASE_VERSION=7.7.0
+ARG CONTAINERBASE_VERSION=7.8.0
 
 FROM ghcr.io/containerbase/base:${CONTAINERBASE_VERSION}
 
@@ -16,7 +16,8 @@ RUN prepare-tool all
 
 USER 1000
 
-COPY index /home/ubuntu/bin/runinstall
+COPY dist/runinstall /home/ubuntu/bin/runinstall
+RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/pipenv
 RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/poetry
 
 ENV LOG_LEVEL=warn
