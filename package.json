@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-binary": "pkg src/runinstall.js --target node18-linux-arm64  --output dist/runinstall",
+    "build-image": "docker build . -t containerbase/runinstall"
   },
   "author": "Rhys Arkins <rhys@arkins.net>",
   "license": "AGPL-3.0-only",
@@ -12,7 +13,7 @@
   },
   "dependencies": {
     "fs-extra": "11.1.0",
-    "renovate": "35.38.0",
+    "renovate": "35.46.0",
     "semver": "7.3.8",
     "upath": "2.0.1"
   }
