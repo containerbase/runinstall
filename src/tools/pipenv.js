@@ -1,30 +1,46 @@
 const fs = require("fs");
 const {
-  getPipenvRequirement,
+  getPipenvConstraint,
   getPythonConstraint,
 } = require("renovate/dist/modules/manager/pipenv/artifacts");
 
-async function detectPythonVersion(pipenvLockContent) {
-  return getPythonConstraint(pipenvLockContent, {}) ?? "*";
+function detectPythonVersion(pipenvLockContent) {
+  let pythonConstraint;
+  try {
+    pythonConstraint = getPythonConstraint(pipenvLockContent, {});
+  } catch (err) {
+    // Intentionally return undefined
+  }
+  return pythonConstraint;
 }
 
 async function detectPipenvVersion(pipenvLockContent) {
-  return getPipenvRequirement(pipenvLockContent) ?? "*";
+  let pipenvConstraint;
+  try {
+    pipenvConstraint = getPipenvConstraint(pipenvLockContent);
+  } catch (err) {
+    // Intentionally return undefined
+  }
+  return pipenvConstraint;
 }
 
 async function getToolConstraints() {
-  const pipenvLockContent = fs.readFileSync("Pipfile.lock", "utf8");
+  let pipenvLockContent;
+  try {
+    pipenvLockContent = fs.readFileSync("Pipfile.lock", "utf8");
+  } catch (err) {
+    // No Pipfile.lock found
+  }
   const toolConstraints = [
     {
       toolName: "python",
       constraint: await detectPythonVersion(pipenvLockContent),
     },
     {
-      toolName: "poetry",
+      toolName: "pipenv",
       constraint: await detectPipenvVersion(pipenvLockContent),
     },
   ];
-  console.log(toolConstraints);
   return toolConstraints;
 }
 

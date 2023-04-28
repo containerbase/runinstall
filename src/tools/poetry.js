@@ -5,13 +5,21 @@ const {
 } = require("renovate/dist/modules/manager/poetry/artifacts");
 
 async function detectPythonVersion() {
-  const poetryLockContent = fs.readFileSync("poetry.lock", "utf8");
-  return getPythonConstraint(poetryLockContent, {}) ?? "*";
+  try {
+    const poetryLockContent = fs.readFileSync("poetry.lock", "utf8");
+    return getPythonConstraint(poetryLockContent, {}) ?? undefined;
+  } catch (err) {
+    return undefined;
+  }
 }
 
 async function detectPoetryVersion() {
-  const pyprojectContent = fs.readFileSync("pyproject.toml", "utf8");
-  return getPoetryRequirement(pyprojectContent) ?? "*";
+  try {
+    const pyprojectContent = fs.readFileSync("pyproject.toml", "utf8");
+    return getPoetryRequirement(pyprojectContent) ?? undefined;
+  } catch (err) {
+    return undefined;
+  }
 }
 
 async function getToolConstraints() {
@@ -19,7 +27,6 @@ async function getToolConstraints() {
     { toolName: "python", constraint: await detectPythonVersion() },
     { toolName: "poetry", constraint: await detectPoetryVersion() },
   ];
-  console.log(toolConstraints);
   return toolConstraints;
 }
 
