@@ -24,7 +24,7 @@ const spawnOpts = {
   stdio: "inherit",
 };
 
-const cmd = process.argv0.replace("node", "mvn"); // Default to mvn in dev
+const cmd = process.env.RUNINSTALL_CMD || process.argv0;
 const args = process.argv.slice(2);
 const cwd = process.cwd();
 
