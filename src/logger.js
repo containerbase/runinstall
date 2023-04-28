@@ -22,6 +22,13 @@ function getLogger() {
           }),
         ],
       });
+      if (process.env.LOG_CONSOLE) {
+        logger.add(
+          new winston.transports.Console({
+            format: winston.format.json(),
+          })
+        );
+      }
     } else if (process.env.LOG_CONSOLE) {
       console.log("Using console logger");
       logger = winston.createLogger({
