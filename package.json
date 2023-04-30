@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "build-binary": "pkg src/runinstall.js --target node18-linux-arm64  --output dist/runinstall",
+    "build-binary": "pkg src/index.js --target node18-linux-arm64  --output dist/runinstall",
     "build-image": "docker build . -t containerbase/runinstall",
     "eslint": "eslint ."
   },
