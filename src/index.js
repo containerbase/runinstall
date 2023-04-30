@@ -54,7 +54,7 @@ function delegateCommand() {
     // do nothing
   }
   const historyLine = `${cwd} ${cmd}`;
-  if (history.split("\n").includes(historyLine)) {
+  if (history === historyLine) {
     // This means runinstall has already run the same cmd on this cwd
     const res = delegateCommand();
     log({
@@ -64,8 +64,7 @@ function delegateCommand() {
     });
     return shutdown(res.status);
   }
-  history += `${historyLine}\n`;
-  fs.writeFileSync(historyFile, history);
+  fs.writeFileSync(historyFile, historyLine);
 
   const toolConstraints = await tools[cmd].getToolConstraints();
   const installCommands = await generateInstallCommands(toolConstraints);
