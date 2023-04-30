@@ -29,6 +29,30 @@ function getEnforcerPlugin(pomXmlContent) {
   return plugin;
 }
 
+function getMavenCompilerPlugin(pomXmlContent) {
+  let plugin;
+  if (pomXmlContent.childNamed("build")) {
+    const build = pomXmlContent.childNamed("build");
+    if (build.childNamed("plugins")) {
+      const plugins = build.childNamed("plugins");
+      for (const p of plugins.childrenNamed("plugin")) {
+        if (p.childNamed("groupId")) {
+          const groupId = p.childNamed("groupId").val;
+          if (groupId === "org.apache.maven.plugins") {
+            if (p.childNamed("artifactId")) {
+              const artifactId = p.childNamed("artifactId").val;
+              if (artifactId === "maven-compiler-plugin") {
+                plugin = p;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return plugin;
+}
+
 function massageConstraint(originalConstraint) {
   let constraint = originalConstraint;
   if (constraint === "1.7") {
@@ -54,10 +78,10 @@ function detectJavaVersion(pomXmlContent) {
   let source;
   let constraint;
   let rawConstraint;
-  const plugin = getEnforcerPlugin(pomXmlContent);
-  if (plugin) {
-    if (plugin.childNamed("executions")) {
-      const executions = plugin.childNamed("executions");
+  const enforcer = getEnforcerPlugin(pomXmlContent);
+  if (enforcer) {
+    if (enforcer.childNamed("executions")) {
+      const executions = enforcer.childNamed("executions");
       let execution;
       for (const e of executions.childrenNamed("execution")) {
         if (e.childNamed("id").val === "enforce-maven") {
@@ -87,6 +111,28 @@ function detectJavaVersion(pomXmlContent) {
             }
           }
         }
+      }
+    }
+  }
+  if (constraint) {
+    return { source, constraint, rawConstraint };
+  }
+  const mavenCompiler = getMavenCompilerPlugin(pomXmlContent);
+  if (mavenCompiler) {
+    if (mavenCompiler.childNamed("configuration")) {
+      const configuration = mavenCompiler.childNamed("configuration");
+      if (configuration.childNamed("source")) {
+        source = "maven-compiler-plugin";
+        rawConstraint = configuration.childNamed("source").val;
+        constraint = massageConstraint(rawConstraint);
+        log({
+          tool: "java",
+          constraint,
+          rawConstraint,
+          found: true,
+          location: "maven-compiler-plugin",
+          message: "tool result",
+        });
       }
     }
   }
