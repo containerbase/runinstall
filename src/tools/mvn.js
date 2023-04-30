@@ -1,7 +1,7 @@
 const fs = require("fs");
 const { XmlDocument } = require("xmldoc");
 const { isValid } = require("renovate/dist/modules/versioning/npm");
-const { getLogger } = require("../logger");
+const { log } = require("../logger");
 
 let logger;
 
@@ -41,7 +41,7 @@ function massageConstraint(originalConstraint) {
   if (isValid(constraint)) {
     return constraint;
   }
-  logger.info(
+  log(
     "Runinstall: Could not massage constraint " +
       originalConstraint +
       " to " +
@@ -51,6 +51,9 @@ function massageConstraint(originalConstraint) {
 }
 
 function detectJavaVersion(pomXmlContent) {
+  let source;
+  let constraint;
+  let rawConstraint;
   const plugin = getEnforcerPlugin(pomXmlContent);
   if (plugin) {
     if (plugin.childNamed("executions")) {
@@ -69,10 +72,13 @@ function detectJavaVersion(pomXmlContent) {
             const rule = rules.childNamed("requireJavaVersion");
             if (rule) {
               if (rule.childNamed("version")) {
-                javaConstraint = rule.childNamed("version").val;
-                logger.info({
+                source = "enforce-maven";
+                rawConstraint = rule.childNamed("version").val;
+                constraint = massageConstraint(rawConstraint);
+                log({
                   tool: "java",
-                  constraint: javaConstraint,
+                  constraint,
+                  rawConstraint,
                   found: true,
                   location: "enforce-maven",
                   message: "tool result",
@@ -84,12 +90,12 @@ function detectJavaVersion(pomXmlContent) {
       }
     }
   }
-  return massageConstraint(javaConstraint) ?? "17";
+  return { source, constraint, rawConstraint };
 }
 
 function detectMavenVersion(pomXmlContent) {
-  logger = getLogger();
-  let mavenConstraint;
+  let constraint;
+  let source;
   const plugin = getEnforcerPlugin(pomXmlContent);
   if (plugin) {
     if (plugin.childNamed("executions")) {
@@ -108,10 +114,11 @@ function detectMavenVersion(pomXmlContent) {
             const rule = rules.childNamed("requireMavenVersion");
             if (rule) {
               if (rule.childNamed("version")) {
-                mavenConstraint = rule.childNamed("version").val;
-                logger.info({
+                source = "enforce-maven";
+                constraint = rule.childNamed("version").val;
+                log({
                   tool: "maven",
-                  constraint: mavenConstraint,
+                  constraint: constraint,
                   found: true,
                   location: "enforce-maven",
                   message: "tool result",
@@ -123,30 +130,30 @@ function detectMavenVersion(pomXmlContent) {
       }
     }
   }
-  return mavenConstraint;
+  return { source, constraint };
 }
 
 function getToolConstraints() {
-  logger = getLogger();
   let pomXmlContent;
   try {
     const raw = fs.readFileSync("pom.xml", "utf8");
+    log({ pomXml: raw, message: "pom.xml content" });
     pomXmlContent = new XmlDocument(raw);
   } catch (err) {
     // No pom.xml found
   }
   if (!pomXmlContent) {
-    logger.info("Runinstall: No pom.xml content found.");
+    log("Runinstall: No pom.xml content found.");
     return [];
   }
   const toolConstraints = [
     {
       toolName: "java",
-      constraint: detectJavaVersion(pomXmlContent),
+      ...detectJavaVersion(pomXmlContent),
     },
     {
       toolName: "maven",
-      constraint: detectMavenVersion(pomXmlContent),
+      ...detectMavenVersion(pomXmlContent),
     },
   ];
   return toolConstraints;
