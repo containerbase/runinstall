@@ -122,7 +122,7 @@ function detectJavaVersion(pomXmlContent) {
     if (mavenCompiler.childNamed("configuration")) {
       const configuration = mavenCompiler.childNamed("configuration");
       if (configuration.childNamed("source")) {
-        source = "maven-compiler-plugin";
+        source = "maven-compiler-plugin.source";
         rawConstraint = configuration.childNamed("source").val;
         constraint = massageConstraint(rawConstraint);
         log({
@@ -130,7 +130,19 @@ function detectJavaVersion(pomXmlContent) {
           constraint,
           rawConstraint,
           found: true,
-          location: "maven-compiler-plugin",
+          location: "maven-compiler-plugin.source",
+          message: "tool result",
+        });
+      } else if (configuration.childNamed("release")) {
+        source = "maven-compiler-plugin.release";
+        rawConstraint = configuration.childNamed("release").val;
+        constraint = massageConstraint(rawConstraint);
+        log({
+          tool: "java",
+          constraint,
+          rawConstraint,
+          found: true,
+          location: "maven-compiler-plugin.release",
           message: "tool result",
         });
       }
@@ -151,6 +163,18 @@ function detectJavaVersion(pomXmlContent) {
         rawConstraint,
         found: true,
         location: "maven.compiler.source",
+        message: "tool result",
+      });
+    } else if (properties.childNamed("java.version")) {
+      source = "java.version";
+      rawConstraint = properties.childNamed("java.version").val;
+      constraint = massageConstraint(rawConstraint);
+      log({
+        tool: "java",
+        constraint,
+        rawConstraint,
+        found: true,
+        location: "java.version",
         message: "tool result",
       });
     }
