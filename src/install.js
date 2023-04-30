@@ -8,6 +8,11 @@ async function generateInstallCommands(toolConstraints) {
     !process.env.RUNINSTALL_ALWAYS_INSTALL &&
     toolConstraints.every((tc) => tc.constraint === undefined)
   ) {
+    if (process.env.RUNINSTALL_DEBUG) {
+      log({
+        message: "Runinstall: No tool constraints found, skipping installation",
+      });
+    }
     return [];
   }
   const token =
