@@ -136,6 +136,25 @@ function detectJavaVersion(pomXmlContent) {
       }
     }
   }
+  if (constraint) {
+    return { source, constraint, rawConstraint };
+  }
+  if (pomXmlContent.childNamed("properties")) {
+    const properties = pomXmlContent.childNamed("properties");
+    if (properties.childNamed("maven.compiler.source")) {
+      source = "maven.compiler.source";
+      rawConstraint = properties.childNamed("maven.compiler.source").val;
+      constraint = massageConstraint(rawConstraint);
+      log({
+        tool: "java",
+        constraint,
+        rawConstraint,
+        found: true,
+        location: "maven.compiler.source",
+        message: "tool result",
+      });
+    }
+  }
   return { source, constraint, rawConstraint };
 }
 
