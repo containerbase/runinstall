@@ -48,6 +48,9 @@ function delegateCommand() {
     return shutdown(-1);
   }
   let history = "";
+  if (process.env.RUNINSTALL_DEBUG) {
+    log({ ...logMeta, historyFile, message: "runinstall history check" });
+  }
   try {
     history = fs.readFileSync(historyFile, "utf-8");
   } catch (err) {
