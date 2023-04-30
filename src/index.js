@@ -1,4 +1,4 @@
-process.env.LOG_LEVEL = "warn";
+process.env.LOG_LEVEL = "fatal";
 process.env.SKIP_VERSION = "1";
 
 const { spawnSync } = require("child_process");
