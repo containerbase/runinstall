@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "build-binary": "pkg src/index.js --target node18-linux-arm64  --output dist/runinstall",
+    "build-binary": "pkg src/index.js --target node18-linux-x64  --output dist/runinstall",
     "build-image": "docker build . -t containerbase/runinstall",
     "eslint": "eslint ."
   },
@@ -13,6 +13,7 @@
     "node": "^18.0.0"
   },
   "dependencies": {
+    "find-up": "5.0.0",
     "fs-extra": "11.1.0",
     "renovate": "35.50.0",
     "semver": "7.3.8",

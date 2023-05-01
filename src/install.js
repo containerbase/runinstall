@@ -2,6 +2,7 @@ const { spawnSync } = require("child_process");
 const containerbase = require("renovate/dist/util/exec/containerbase");
 const hostRules = require("renovate/dist/util/host-rules");
 const { log } = require("./logger");
+const { findToken } = require("./token");
 
 async function generateInstallCommands(toolConstraints) {
   if (
@@ -16,7 +17,7 @@ async function generateInstallCommands(toolConstraints) {
     return [];
   }
   const token =
-    process.env.GITHUB_COM_TOKEN ?? process.env.GITHUB_COM_TOKEN_FALLBACK;
+    process.env.GITHUB_COM_TOKEN ?? (await findToken()) ?? process.env.GITHUB_COM_TOKEN_FALLBACK;
   if (token) {
     hostRules.add({
       matchHost: "api.github.com",
