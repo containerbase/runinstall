@@ -17,7 +17,7 @@ async function generateInstallCommands(toolConstraints) {
     return [];
   }
   const token =
-    process.env.GITHUB_COM_TOKEN ?? (await findToken()) ?? process.env.GITHUB_COM_TOKEN_FALLBACK;
+    (await findToken()) ?? process.env.RUNINSTALL_GITHUB_TOKEN;
   if (token) {
     hostRules.add({
       matchHost: "api.github.com",
@@ -27,7 +27,7 @@ async function generateInstallCommands(toolConstraints) {
     log({
       error: true,
       message:
-        "Runinstall: No GITHUB_COM_TOKEN env var set, tool installations may fail",
+        "Runinstall: No github.com token set, tool installations may fail",
     });
   }
   let installCommands = [];
