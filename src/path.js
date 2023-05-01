@@ -1,7 +1,7 @@
 const { spawnSync } = require("child_process");
 
 function getRemote() {
-  if (!process.env.RUNINSTALL_PATHS) {
+  if (!process.env.RUNINSTALL_MATCH) {
     return null;
   }
   try {
@@ -17,13 +17,13 @@ function getRemote() {
 }
 
 function matchPath(remote) {
-  if (!process.env.RUNINSTALL_PATHS) {
+  if (!process.env.RUNINSTALL_MATCH) {
     return false;
   }
   if (!remote) {
     return false;
   }
-  const paths = process.env.RUNINSTALL_PATHS.split(",");
+  const paths = process.env.RUNINSTALL_MATCH.split(",");
   if (paths.some((p) => remote.includes(p))) {
     return true;
   }

@@ -16,13 +16,13 @@ If all the above are undefined then Runinstall won't log a thing.
 
 ### Path matching
 
-If `RUNINSTALL_PATHS` is undefined, or does not match, then all logic will be skipped.
+If `RUNINSTALL_MATCH` is undefined, or does not match, then all logic will be skipped.
 The command will be passed through to `/usr/local/bin/${cmd}`.
 
 Example:
 
 ```
-export RUNINSTALL_PATHS=org_a,org_b
+export RUNINSTALL_MATCH=org_a,org_b
 mvn --version
 ```
 
