@@ -2,16 +2,16 @@ process.env.LOG_LEVEL = "fatal";
 process.env.SKIP_VERSION = "1";
 
 const { spawnSync } = require("child_process");
-const fs = require("fs");
 const os = require("os");
 
 const mvn = require("./tools/mvn");
 const pipenv = require("./tools/pipenv");
 const poetry = require("./tools/poetry");
 
+const { historySatisfied, writeHistory } = require("./history");
 const { generateInstallCommands, installTools } = require("./install");
 const { log, shutdown } = require("./logger");
-const { matchPath } = require("./path");
+const { getRemote, matchPath } = require("./path");
 
 const tools = {
   mvn,
@@ -37,27 +37,18 @@ function delegateCommand() {
 }
 
 (async function () {
-  if (!matchPath()) {
-    // This means runinstall should not be active on this repo
-    const res = delegateCommand();
-    process.exit(res.status);
-  }
   if (!tools[cmd]) {
     // This shouldn't happen
     log({ error: true, ...logMeta, message: `Unknown command` });
     return shutdown(-1);
   }
-  let history = "";
-  if (process.env.RUNINSTALL_DEBUG) {
-    log({ ...logMeta, historyFile, message: "runinstall history check" });
+  const remote = getRemote();
+  if (!matchPath(remote)) {
+    // This means runinstall should not be active on this repo
+    const res = delegateCommand();
+    process.exit(res.status);
   }
-  try {
-    history = fs.readFileSync(historyFile, "utf-8");
-  } catch (err) {
-    // do nothing
-  }
-  const historyLine = `${cwd} ${cmd}`;
-  if (history === historyLine) {
+  if (historySatisfied()) {
     // This means runinstall has already run the same cmd on this cwd
     const res = delegateCommand();
     log({
@@ -67,7 +58,7 @@ function delegateCommand() {
     });
     return shutdown(res.status);
   }
-  fs.writeFileSync(historyFile, historyLine);
+  writeHistory();
 
   const toolConstraints = await tools[cmd].getToolConstraints();
   const installCommands = await generateInstallCommands(toolConstraints);
@@ -80,6 +71,7 @@ function delegateCommand() {
 
   log({
     ...logMeta,
+    remote,
     toolConstraints,
     installCommands,
     installSuccess,

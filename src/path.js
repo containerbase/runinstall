@@ -1,13 +1,33 @@
-function matchPath() {
+const { spawnSync } = require("child_process");
+
+function getRemote() {
+  if (!process.env.RUNINSTALL_PATHS) {
+    return null;
+  }
+  try {
+    const res = spawnSync("git", ["remote", "get-url", "origin"], {
+      encoding: "utf-8",
+      shell: true,
+    });
+    return res.stdout.replace(/\n$/, "");
+  } catch (err) {
+    // do nothing
+  }
+  return null;
+}
+
+function matchPath(remote) {
   if (!process.env.RUNINSTALL_PATHS) {
     return false;
   }
-  const cwd = process.cwd();
+  if (!remote) {
+    return false;
+  }
   const paths = process.env.RUNINSTALL_PATHS.split(",");
-  if (paths.some((p) => cwd.includes(p))) {
+  if (paths.some((p) => remote.includes(p))) {
     return true;
   }
   return false;
 }
 
-module.exports = { matchPath };
+module.exports = { getRemote, matchPath };
