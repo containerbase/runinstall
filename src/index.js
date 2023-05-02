@@ -25,7 +25,9 @@ const cwd = process.cwd();
 const tmpDir = os.tmpdir();
 const historyFile = `${tmpDir}/runinstall-history.json`;
 
-const logMeta = { cwd, cmd, args };
+const environment = process.env.RUNINSTALL_ENV ?? "default";
+
+const logMeta = { cwd, cmd, args, environment };
 
 let logger;
 
