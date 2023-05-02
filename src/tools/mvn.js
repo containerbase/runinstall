@@ -84,7 +84,7 @@ function detectJavaVersion(pomXmlContent) {
       const executions = enforcer.childNamed("executions");
       let execution;
       for (const e of executions.childrenNamed("execution")) {
-        if (e.childNamed("id").val === "enforce-maven") {
+        if (e.childNamed("id").val === "enforce-maven" || e.childNamed("id").val === "enforce-requirements") {
           execution = e;
         }
       }
@@ -191,7 +191,7 @@ function detectMavenVersion(pomXmlContent) {
       const executions = plugin.childNamed("executions");
       let execution;
       for (const e of executions.childrenNamed("execution")) {
-        if (e.childNamed("id").val === "enforce-maven") {
+        if (e.childNamed("id").val === "enforce-maven" || e.childNamed("id").val === "enforce-requirements") {
           execution = e;
         }
       }
