@@ -14,6 +14,4 @@ RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/mvn
 RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/pipenv
 RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/poetry
 
-ENV LOG_LEVEL=warn
-ENV SKIP_VERSION=1
-ENV RENOVATE_X_IGNORE_RE2=1
+USER 0
