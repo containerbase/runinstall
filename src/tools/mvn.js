@@ -232,7 +232,7 @@ function getToolConstraints() {
     // No pom.xml found
   }
   if (!pomXmlContent) {
-    log("Runinstall: No pom.xml content found.");
+    log({ cwd: process.cwd(), message: "Runinstall: No pom.xml content found.")};
     return [];
   }
   const toolConstraints = [
