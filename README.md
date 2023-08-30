@@ -33,7 +33,7 @@ node src/index.js --version
 Runinstall will skip all remaining logic if the same command has been run in the same directory right immediately before.
 It achieves this by writing the previous command to `/tmp/runinstall_history`.
 
-This can be overridden by setting `RENOVATE_FORCE=1`, which means Runinstall will ignore the history.
+This can be overridden by setting `RUNINSTALL_FORCE=1`, which means Runinstall will ignore the history.
 
 ### Constraint extraction
 
@@ -48,6 +48,7 @@ Runinstall then maps constraints to install commands.
 This may require access to a github.com token in order to fetch release lists.
 
 The token is found from either:
+
 - `.gitAccessToken` in the file system in the current directory or a parent directory, or
 - From `RUNINSTALL_GITHUB_TOKEN` (used as a fallback)
 
