@@ -4,7 +4,8 @@
   "packageRules": [
     {
       "matchPackagePatterns": ["*"],
-      "automerge": false
+      "automerge": false,
+      "prCreation": "immediate"
     }
   ]
 }
