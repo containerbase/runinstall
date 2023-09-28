@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "find-up": "5.0.0",
-    "fs-extra": "11.1.0",
+    "fs-extra": "11.1.1",
     "renovate": "35.50.0",
     "semver": "7.3.8",
     "upath": "2.0.1",
