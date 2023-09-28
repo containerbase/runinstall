@@ -1,4 +1,10 @@
 {
   "extends": ["github>containerbase/.github"],
-  "baseBranches": ["dev", "main"]
+  "baseBranches": ["dev", "main"],
+  "packageRules": [
+    {
+      "matchPackagePatterns": ["*"],
+      "automerge": false
+    }
+  ]
 }
