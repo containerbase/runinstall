@@ -1,3 +1,4 @@
 {
-  "extends": ["github>containerbase/.github"]
+  "extends": ["github>containerbase/.github"],
+  "baseBranches": ["dev", "main"]
 }
