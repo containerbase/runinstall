@@ -1,6 +1,7 @@
 {
   "extends": ["github>containerbase/.github"],
   "baseBranches": ["dev", "main"],
+  "dependencyDashboardApproval": true,
   "packageRules": [
     {
       "matchPackagePatterns": ["*"],
