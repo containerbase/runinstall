@@ -60,7 +60,7 @@ function installTools(commands) {
     log({
       res,
       err,
-      success: !err && !res.error,
+      success: !err && !res.error && res.status !== 1,
       cmd,
       tool: cmd.split(" ")[1],
       version: cmd.split(" ")[2],
