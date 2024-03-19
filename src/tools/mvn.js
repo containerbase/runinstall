@@ -49,6 +49,20 @@ function getMavenCompilerPlugin(pomXmlContent) {
         }
       }
     }
+    if (!plugin && build.childNamed("pluginManagement")) {
+      const pluginManagement = build.childNamed("pluginManagement");
+      if (pluginManagement.childNamed("plugins")) {
+        const plugins = pluginManagement.childNamed("plugins");
+        for (const p of plugins.childrenNamed("plugin")) {
+          if (p.childNamed("artifactId")) {
+            const artifactId = p.childNamed("artifactId").val;
+            if (artifactId === "maven-compiler-plugin") {
+              plugin = p;
+            }
+          }
+        }
+      }
+    }
   }
   return plugin;
 }
@@ -165,6 +179,18 @@ function detectJavaVersion(pomXmlContent) {
         location: "maven.compiler.source",
         message: "tool result",
       });
+    } else if (properties.childNamed("maven.compiler.release")) {
+      source = "maven.compiler.release";
+      rawConstraint = properties.childNamed("maven.compiler.release").val;
+      constraint = massageConstraint(rawConstraint);
+      log({
+        tool: "java",
+        constraint,
+        rawConstraint,
+        found: true,
+        location: "maven.compiler.release",
+        message: "tool result",
+      });
     } else if (properties.childNamed("java.version")) {
       source = "java.version";
       rawConstraint = properties.childNamed("java.version").val;
@@ -218,6 +244,23 @@ function detectMavenVersion(pomXmlContent) {
         }
       }
     }
+  }
+  if (constraint) {
+    return { source, constraint };
+  }
+  const mavenCompiler = getMavenCompilerPlugin(pomXmlContent);
+  if (mavenCompiler.childNamed("version")) {
+    source = "maven-compiler-plugin.version";
+    rawConstraint = mavenCompiler.childNamed("version").val;
+    constraint = massageConstraint(rawConstraint);
+    log({
+      tool: "maven",
+      constraint,
+      rawConstraint,
+      found: true,
+      location: "maven-compiler-plugin.version",
+      message: "tool result",
+    });
   }
   return { source, constraint };
 }
