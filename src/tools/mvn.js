@@ -55,10 +55,10 @@ function getMavenCompilerPlugin(pomXmlContent) {
 
 function massageConstraint(originalConstraint) {
   let constraint = originalConstraint;
-  if (constraint === "1.7") {
+  if (constraint === "1.7" || constraint === "1.7.0") {
     constraint = "8";
   }
-  if (constraint === "1.8") {
+  if (constraint === "1.8" || constraint === "1.8.0") {
     constraint = "8";
   }
   constraint = constraint.replace(/^\[(.*?),/, `^$1,`).replace(/,\)$/, "");
@@ -235,6 +235,7 @@ function getToolConstraints() {
     log({ cwd: process.cwd(), message: "Runinstall: No pom.xml content found." });
     return [];
   }
+
   const toolConstraints = [
     {
       toolName: "java",
