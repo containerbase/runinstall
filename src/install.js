@@ -45,7 +45,7 @@ async function generateInstallCommands(toolConstraints) {
   return installCommands;
 }
 
-function installTools(commands) {
+function installTools(commands, logMeta) {
   let success;
   for (const cmd of commands) {
     let res;
@@ -58,6 +58,7 @@ function installTools(commands) {
       success = false;
     }
     log({
+      ...logMeta,
       res,
       err,
       success: !err && !res.error && res.status !== 1,

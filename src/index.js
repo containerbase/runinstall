@@ -66,7 +66,7 @@ function delegateCommand() {
   const installCommands = await generateInstallCommands(toolConstraints);
   let installSuccess;
   if (installCommands?.length) {
-    installSuccess = installTools(installCommands);
+    installSuccess = installTools(installCommands, logMeta);
   }
   // Pass on the command to the "real" tool
   const res = delegateCommand();
