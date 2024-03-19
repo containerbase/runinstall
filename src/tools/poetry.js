@@ -6,8 +6,9 @@ const {
 
 async function detectPythonVersion() {
   try {
+    const pyprojectContent = fs.readFileSync("pyproject.toml", "utf8");
     const poetryLockContent = fs.readFileSync("poetry.lock", "utf8");
-    return getPythonConstraint(poetryLockContent, {}) ?? undefined;
+    return getPythonConstraint(pyprojectContent, poetryLockContent) ?? undefined;
   } catch (err) {
     return undefined;
   }
@@ -16,7 +17,8 @@ async function detectPythonVersion() {
 async function detectPoetryVersion() {
   try {
     const pyprojectContent = fs.readFileSync("pyproject.toml", "utf8");
-    return getPoetryRequirement(pyprojectContent) ?? undefined;
+    const poetryLockContent = fs.readFileSync("poetry.lock", "utf8");
+    return getPoetryRequirement(pyprojectContent, poetryLockContent) ?? undefined;
   } catch (err) {
     return undefined;
   }
