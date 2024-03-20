@@ -4,7 +4,7 @@ const hostRules = require("renovate/dist/util/host-rules");
 const { log } = require("./logger");
 const { findToken } = require("./token");
 
-async function generateInstallCommands(toolConstraints) {
+async function generateInstallCommands(toolConstraints, logMeta) {
   if (
     !process.env.RUNINSTALL_ALWAYS_INSTALL &&
     toolConstraints.every((tc) => tc.constraint === undefined)
@@ -17,7 +17,7 @@ async function generateInstallCommands(toolConstraints) {
     return [];
   }
   const token =
-    (await findToken()) ?? process.env.RUNINSTALL_GITHUB_TOKEN;
+    (await findToken(logMeta)) ?? process.env.RUNINSTALL_GITHUB_TOKEN;
   if (token) {
     hostRules.add({
       matchHost: "api.github.com",
@@ -25,6 +25,7 @@ async function generateInstallCommands(toolConstraints) {
     });
   } else {
     log({
+      ...logMeta,
       error: true,
       message:
         "Runinstall: No github.com token set, tool installations may fail",
@@ -33,10 +34,11 @@ async function generateInstallCommands(toolConstraints) {
   let installCommands = [];
   try {
     installCommands = await containerbase.generateInstallCommands(
-      toolConstraints
+      toolConstraints, logMeta
     );
   } catch (err) {
     log({
+      ...logMeta,
       error: true,
       err,
       message: "Runinstall: Error generating installation commands",

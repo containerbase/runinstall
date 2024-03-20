@@ -8,13 +8,13 @@ const tmpDir = os.tmpdir();
 const historyFile = `${tmpDir}/runinstall-history.json`;
 const historyLine = `${cwd} ${cmd}`;
 
-function historySatisfied() {
+function historySatisfied(logMeta) {
   if (process.env.RUNINSTALL_FORCE) {
     return false;
   }
   let history;
   if (process.env.RUNINSTALL_DEBUG) {
-    log({ cwd, cmd, historyFile, message: "runinstall history check" });
+    log({ ...logMeta, cwd, cmd, historyFile, message: "runinstall history check" });
   }
   try {
     history = fs.readFileSync(historyFile, "utf-8");

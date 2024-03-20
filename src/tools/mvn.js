@@ -67,7 +67,7 @@ function getMavenCompilerPlugin(pomXmlContent) {
   return plugin;
 }
 
-function massageConstraint(originalConstraint) {
+function massageConstraint(originalConstraint, logMeta) {
   let constraint = originalConstraint;
   if (constraint === "1.7" || constraint === "1.7.0") {
     constraint = "8";
@@ -79,16 +79,17 @@ function massageConstraint(originalConstraint) {
   if (isValid(constraint)) {
     return constraint;
   }
-  log(
-    "Runinstall: Could not massage constraint " +
+  log({
+    ...logMeta,
+    message: "Runinstall: Could not massage constraint " +
       originalConstraint +
       " to " +
       constraint
-  );
+  });
   return undefined;
 }
 
-function detectJavaVersion(pomXmlContent) {
+function detectJavaVersion(pomXmlContent, logMeta) {
   let source;
   let constraint;
   let rawConstraint;
@@ -112,8 +113,9 @@ function detectJavaVersion(pomXmlContent) {
               if (rule.childNamed("version")) {
                 source = "enforce-maven";
                 rawConstraint = rule.childNamed("version").val;
-                constraint = massageConstraint(rawConstraint);
+                constraint = massageConstraint(rawConstraint, logMeta);
                 log({
+                  ...logMeta,
                   tool: "java",
                   constraint,
                   rawConstraint,
@@ -138,8 +140,9 @@ function detectJavaVersion(pomXmlContent) {
       if (configuration.childNamed("source")) {
         source = "maven-compiler-plugin.source";
         rawConstraint = configuration.childNamed("source").val;
-        constraint = massageConstraint(rawConstraint);
+        constraint = massageConstraint(rawConstraint, logMeta);
         log({
+          ...logMeta,
           tool: "java",
           constraint,
           rawConstraint,
@@ -150,8 +153,9 @@ function detectJavaVersion(pomXmlContent) {
       } else if (configuration.childNamed("release")) {
         source = "maven-compiler-plugin.release";
         rawConstraint = configuration.childNamed("release").val;
-        constraint = massageConstraint(rawConstraint);
+        constraint = massageConstraint(rawConstraint, logMeta);
         log({
+          ...logMeta,
           tool: "java",
           constraint,
           rawConstraint,
@@ -170,8 +174,9 @@ function detectJavaVersion(pomXmlContent) {
     if (properties.childNamed("maven.compiler.source")) {
       source = "maven.compiler.source";
       rawConstraint = properties.childNamed("maven.compiler.source").val;
-      constraint = massageConstraint(rawConstraint);
+      constraint = massageConstraint(rawConstraint, logMeta);
       log({
+        ...logMeta,
         tool: "java",
         constraint,
         rawConstraint,
@@ -182,8 +187,9 @@ function detectJavaVersion(pomXmlContent) {
     } else if (properties.childNamed("maven.compiler.release")) {
       source = "maven.compiler.release";
       rawConstraint = properties.childNamed("maven.compiler.release").val;
-      constraint = massageConstraint(rawConstraint);
+      constraint = massageConstraint(rawConstraint, logMeta);
       log({
+        ...logMeta,
         tool: "java",
         constraint,
         rawConstraint,
@@ -194,8 +200,9 @@ function detectJavaVersion(pomXmlContent) {
     } else if (properties.childNamed("java.version")) {
       source = "java.version";
       rawConstraint = properties.childNamed("java.version").val;
-      constraint = massageConstraint(rawConstraint);
+      constraint = massageConstraint(rawConstraint, logMeta);
       log({
+        ...logMeta,
         tool: "java",
         constraint,
         rawConstraint,
@@ -208,7 +215,7 @@ function detectJavaVersion(pomXmlContent) {
   return { source, constraint, rawConstraint };
 }
 
-function detectMavenVersion(pomXmlContent) {
+function detectMavenVersion(pomXmlContent, logMeta) {
   let constraint;
   let source;
   const plugin = getEnforcerPlugin(pomXmlContent);
@@ -232,6 +239,7 @@ function detectMavenVersion(pomXmlContent) {
                 source = "enforce-maven";
                 constraint = rule.childNamed("version").val;
                 log({
+                  ...logMeta,
                   tool: "maven",
                   constraint: constraint,
                   found: true,
@@ -252,8 +260,9 @@ function detectMavenVersion(pomXmlContent) {
   if (mavenCompiler.childNamed("version")) {
     source = "maven-compiler-plugin.version";
     rawConstraint = mavenCompiler.childNamed("version").val;
-    constraint = massageConstraint(rawConstraint);
+    constraint = massageConstraint(rawConstraint, logMeta);
     log({
+      ...logMeta,
       tool: "maven",
       constraint,
       rawConstraint,
@@ -265,28 +274,28 @@ function detectMavenVersion(pomXmlContent) {
   return { source, constraint };
 }
 
-function getToolConstraints() {
+function getToolConstraints(logMeta) {
   let pomXmlContent;
   try {
     const raw = fs.readFileSync("pom.xml", "utf8");
-    log({ pomXml: raw, message: "pom.xml content" });
+    // log({ pomXml: raw, message: "pom.xml content" });
     pomXmlContent = new XmlDocument(raw);
   } catch (err) {
     // No pom.xml found
   }
   if (!pomXmlContent) {
-    log({ cwd: process.cwd(), message: "Runinstall: No pom.xml content found." });
+    log({ ...logMeta, cwd: process.cwd(), message: "Runinstall: No pom.xml content found." });
     return [];
   }
 
   const toolConstraints = [
     {
       toolName: "java",
-      ...detectJavaVersion(pomXmlContent),
+      ...detectJavaVersion(pomXmlContent, logMeta),
     },
     {
       toolName: "maven",
-      ...detectMavenVersion(pomXmlContent),
+      ...detectMavenVersion(pomXmlContent, logMeta),
     },
   ];
   return toolConstraints;

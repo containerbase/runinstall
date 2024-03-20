@@ -2,11 +2,12 @@ const fs = require('fs');
 const findUp = require('find-up');
 const { log } = require('./logger');
 
-async function findToken() {
+async function findToken(logMeta) {
   const tokenFile = await findUp('.gitAccessToken');
   if (tokenFile) {
     if (process.env.RUNINSTALL_DEBUG) {
       log({
+        ...logMeta,
         message: `Runinstall: Found token file at ${tokenFile}`,
       })
     }
@@ -14,6 +15,7 @@ async function findToken() {
     return token;
   } else if (process.env.RUNINSTALL_DEBUG) {
     log({
+      ...logMeta,
       message: `Runinstall: Found no token file`,
     })
   }

@@ -41,7 +41,7 @@ function delegateCommand() {
 (async function () {
   if (!tools[cmd]) {
     // This shouldn't happen
-    log({ error: true, ...logMeta, message: `Unknown command` });
+    log({ ...logMeta, error: true, message: `Unknown command` });
     return shutdown(-1);
   }
   const remote = getRemote();
@@ -50,7 +50,7 @@ function delegateCommand() {
     const res = delegateCommand();
     process.exit(res.status);
   }
-  if (historySatisfied()) {
+  if (historySatisfied(logMeta)) {
     // This means runinstall has already run the same cmd on this cwd
     const res = delegateCommand();
     log({
@@ -62,8 +62,8 @@ function delegateCommand() {
   }
   writeHistory();
 
-  const toolConstraints = await tools[cmd].getToolConstraints();
-  const installCommands = await generateInstallCommands(toolConstraints);
+  const toolConstraints = await tools[cmd].getToolConstraints(logMeta);
+  const installCommands = await generateInstallCommands(toolConstraints, logMeta);
   let installSuccess;
   if (installCommands?.length) {
     installSuccess = installTools(installCommands, logMeta);
