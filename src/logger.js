@@ -18,7 +18,7 @@ function getLogger() {
                 accessKeyId: process.env.RUNINSTALL_KEY_ID,
                 secretAccessKey: process.env.RUNINSTALL_ACCESS_KEY,
               },
-              region: "us-west-2",
+              region: process.env.AWS_REGION || "us-west-2",
             },
             jsonMessage: true,
           }),
