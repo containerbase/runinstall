@@ -11,7 +11,7 @@ const poetry = require("./tools/poetry");
 const { historySatisfied, writeHistory } = require("./history");
 const { generateInstallCommands, installTools } = require("./install");
 const { log, shutdown } = require("./logger");
-const { getRemote, matchPath } = require("./path");
+const { skipToolInstall } = require("./path");
 
 const tools = {
   mvn,
@@ -44,12 +44,12 @@ function delegateCommand() {
     log({ ...logMeta, error: true, message: `Unknown command` });
     return shutdown(-1);
   }
-  const remote = getRemote();
-  if (!matchPath(remote)) {
-    // This means runinstall should not be active on this repo
+
+  if(skipToolInstall()) {
     const res = delegateCommand();
     process.exit(res.status);
   }
+
   if (historySatisfied(logMeta)) {
     // This means runinstall has already run the same cmd on this cwd
     const res = delegateCommand();

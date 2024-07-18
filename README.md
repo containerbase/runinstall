@@ -4,15 +4,21 @@
 
 ### Path matching
 
-If `RUNINSTALL_MATCH` is undefined, or does not match, then all logic will be skipped.
-The command will be passed through to `/usr/local/bin/${cmd}`.
+- `RUNINSTALL_ENABLE_NO_GIT`: if set to `true` it allows running tool update without any git repository. it will bypass `RUNINSTALL_INCLUDES` and `RUNINSTALL_EXCLUDES`
+- `RUNINSTALL_INCLUDES`: a comma seperated list of strings for repository URLs to include (fallback to `RUNINSTALL_MATCH`)
+- `RUNINSTALL_EXCLUDES`: a comma seperated list of strings for repository URLs to exclude
 
+If `RUNINSTALL_INCLUDES` is undefined, or does not match, or `RUNINSTALL_EXCLUDES` is matched, then all logic will be skipped. 
+The command will be passed through to `/usr/local/bin/${cmd}`.
+ 
 Example:
 
 ```
-export RUNINSTALL_MATCH=org_a,org_b
+export RUNINSTALL_INCLUDES=org_a,org_b
 mvn --version
 ```
+
+`RUNINSTALL_MATCH` is deprecated and replaced by `RUNINSTALL_INCLUDES`.
 
 ### Tool name checking
 

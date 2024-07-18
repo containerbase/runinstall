@@ -31,16 +31,22 @@ async function getToolConstraints() {
   } catch (err) {
     // No Pipfile.lock found
   }
-  const toolConstraints = [
-    {
-      toolName: "python",
-      constraint: await detectPythonVersion(pipenvLockContent),
-    },
-    {
-      toolName: "pipenv",
-      constraint: await detectPipenvVersion(pipenvLockContent),
-    },
-  ];
+
+  let toolConstraints = [];
+  try {
+    toolConstraints = [
+      {
+        toolName: "python",
+        constraint: await detectPythonVersion(pipenvLockContent),
+      },
+      {
+        toolName: "pipenv",
+        constraint: await detectPipenvVersion(pipenvLockContent),
+      },
+    ];
+  } catch (err) {
+  }
+
   return toolConstraints;
 }
 
