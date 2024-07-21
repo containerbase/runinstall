@@ -5,6 +5,8 @@ let riMatch = process.env.RUNINSTALL_MATCH; // deprecated
 let includes = process.env.RUNINSTALL_INCLUDES;
 let excludes = process.env.RUNINSTALL_EXCLUDES;
 
+let remote = undefined;
+
 function skipToolInstall() {
   if (enableNoGit === 'true') {
     // always enabled without a git check
@@ -19,7 +21,7 @@ function skipToolInstall() {
     return true;
   }
 
-  const remote = git.getRemote();
+  remote = git.getRemote();
   if (!remote) {
     // could not find remote
     return true;
@@ -38,6 +40,10 @@ function skipToolInstall() {
   return !matchFound;
 }
 
+function getRemoteValue() {
+  return remote;
+}
+
 // setters for testing
 function setEnableNoGit(value) {
   enableNoGit = value;
@@ -54,6 +60,7 @@ function setExcludes(value) {
 
 module.exports = {
   setEnableNoGit,
+  getRemoteValue,
   setRiMatch,
   setIncludes,
   setExcludes,
