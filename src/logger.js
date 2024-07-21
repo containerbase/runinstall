@@ -56,7 +56,7 @@ function log(...args) {
 
 function shutdown(status) {
   // Flush the logs if necessary, then exit
-  if (!logger || !logger.transports || process.env.RUNINSTALL_DEBUG) {
+  if (!logger || !logger.transports) {
     process.exit(status);
   }
 
