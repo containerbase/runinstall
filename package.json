@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build-binary": "pkg src/index.js --target node18-linux-x64  --output dist/runinstall",
-    "build-image": "docker build . -t containerbase/runinstall:10",
+    "build-image": "docker build . -t containerbase/runinstall:latest",
     "jest": "jest --env=node --passWithNoTests",
     "prettier": "prettier --list-different \"**/*.{ts,js,mjs,json,md}\""
   },

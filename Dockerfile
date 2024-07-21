@@ -34,6 +34,4 @@ RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/mvn
 RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/pipenv
 RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/poetry
 
-COPY test/ /home/ubuntu/test
-
 USER 0
