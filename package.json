@@ -1,6 +1,6 @@
 {
   "name": "runinstall",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "scripts": {
     "build-binary": "pkg src/index.js --target node18-linux-x64  --output dist/runinstall",
