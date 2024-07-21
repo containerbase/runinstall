@@ -18,7 +18,7 @@ export RUNINSTALL_INCLUDES=org_a,org_b
 mvn --version
 ```
 
-`RUNINSTALL_MATCH` is deprecated and replaced by `RUNINSTALL_INCLUDES`.
+`RUNINSTALL_MATCH` is deprecated and has been replaced by `RUNINSTALL_INCLUDES`.
 
 ### Tool name checking
 
