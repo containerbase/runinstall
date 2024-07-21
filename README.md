@@ -4,7 +4,7 @@
 
 ### Path matching
 
-- `RUNINSTALL_ENABLE_NO_GIT`: if set to `true` it allows running tool update without any git repository. it will bypass `RUNINSTALL_INCLUDES` and `RUNINSTALL_EXCLUDES`
+- `RUNINSTALL_ENABLE_NO_GIT`: if set to `true`, It allows running tool update without any git repository. it will bypass `RUNINSTALL_INCLUDES` and `RUNINSTALL_EXCLUDES`
 - `RUNINSTALL_INCLUDES`: a comma seperated list of strings for repository URLs to include (fallback to `RUNINSTALL_MATCH`)
 - `RUNINSTALL_EXCLUDES`: a comma seperated list of strings for repository URLs to exclude
 
