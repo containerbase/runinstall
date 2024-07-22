@@ -25,10 +25,21 @@ async function detectPoetryVersion() {
 }
 
 async function getToolConstraints() {
-  const toolConstraints = [
-    { toolName: "python", constraint: await detectPythonVersion() },
-    { toolName: "poetry", constraint: await detectPoetryVersion() },
-  ];
+  let toolConstraints = [];
+  try {
+    toolConstraints = [
+      {
+        toolName: "python",
+        constraint: await detectPythonVersion()
+      },
+      {
+        toolName: "poetry",
+        constraint: await detectPoetryVersion()
+      },
+    ];
+  } catch (ignored) {
+  }
+
   return toolConstraints;
 }
 

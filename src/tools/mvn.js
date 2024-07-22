@@ -257,7 +257,7 @@ function detectMavenVersion(pomXmlContent, logMeta) {
     return { source, constraint };
   }
   const mavenCompiler = getMavenCompilerPlugin(pomXmlContent);
-  if (mavenCompiler.childNamed("version")) {
+  if (mavenCompiler && mavenCompiler.childNamed("version")) {
     source = "maven-compiler-plugin.version";
     rawConstraint = mavenCompiler.childNamed("version").val;
     constraint = massageConstraint(rawConstraint, logMeta);
@@ -274,10 +274,18 @@ function detectMavenVersion(pomXmlContent, logMeta) {
   return { source, constraint };
 }
 
-function getToolConstraints(logMeta) {
+// inputFilePath: optional value for the pox.xml location
+function getToolConstraints(logMeta, inputFilePath) {
   let pomXmlContent;
+
+  let pom = 'pom.xml';
+  if (inputFilePath) {
+    // for testing
+    pom = inputFilePath;
+  }
+
   try {
-    const raw = fs.readFileSync("pom.xml", "utf8");
+    const raw = fs.readFileSync(pom, "utf8");
     // log({ pomXml: raw, message: "pom.xml content" });
     pomXmlContent = new XmlDocument(raw);
   } catch (err) {
@@ -288,16 +296,26 @@ function getToolConstraints(logMeta) {
     return [];
   }
 
-  const toolConstraints = [
-    {
-      toolName: "java",
-      ...detectJavaVersion(pomXmlContent, logMeta),
-    },
-    {
-      toolName: "maven",
-      ...detectMavenVersion(pomXmlContent, logMeta),
-    },
-  ];
+  const toolConstraints = [];
+
+  try {
+    const j = detectJavaVersion(pomXmlContent, logMeta);
+    if (j && j.constraint) {
+      j.toolName = 'java';
+      toolConstraints.push(j);
+    }
+  } catch (ignored) {
+  }
+
+  try {
+    const m = detectMavenVersion(pomXmlContent, logMeta);
+    if (m && m.constraint) {
+      m.toolName = 'maven';
+      toolConstraints.push(m);
+    }
+  } catch (ignored) {
+  }
+
   return toolConstraints;
 }
 

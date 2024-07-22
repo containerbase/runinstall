@@ -7,6 +7,26 @@ LABEL org.opencontainers.image.source="https://github.com/containerbase/runinsta
 
 RUN prepare-tool all
 
+# renovate: datasource=adoptium-java depName=java
+ARG JAVA_VERSION=11.0.23+9
+RUN install-tool java
+
+# renovate: datasource=maven packageName=org.apache.maven:maven
+ARG MAVEN_VERSION=3.9.1
+RUN install-tool maven
+
+# renovate: datasource=github-releases depName=python packageName=containerbase/python-prebuild
+ARG PYTHON_VERSION=3.12.3
+RUN install-tool python
+
+# renovate: datasource=pypi depName=pipenv
+ARG PIPENV_VERSION=2023.12.1
+RUN install-tool pipenv
+
+# renovate: datasource=github-releases depName=poetry packageName=python-poetry/poetry
+ARG POETRY_VERSION=1.8.2
+RUN install-tool poetry
+
 USER 1000
 
 COPY dist/runinstall /home/ubuntu/bin/runinstall

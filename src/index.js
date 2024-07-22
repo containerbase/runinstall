@@ -11,7 +11,7 @@ const poetry = require("./tools/poetry");
 const { historySatisfied, writeHistory } = require("./history");
 const { generateInstallCommands, installTools } = require("./install");
 const { log, shutdown } = require("./logger");
-const { getRemote, matchPath } = require("./path");
+const { skipToolInstall, getRemoteValue} = require("./path");
 
 const tools = {
   mvn,
@@ -38,18 +38,18 @@ function delegateCommand() {
   });
 }
 
-(async function () {
+async function main() {
   if (!tools[cmd]) {
     // This shouldn't happen
     log({ ...logMeta, error: true, message: `Unknown command` });
     return shutdown(-1);
   }
-  const remote = getRemote();
-  if (!matchPath(remote)) {
-    // This means runinstall should not be active on this repo
+
+  if(skipToolInstall()) {
     const res = delegateCommand();
     process.exit(res.status);
   }
+
   if (historySatisfied(logMeta)) {
     // This means runinstall has already run the same cmd on this cwd
     const res = delegateCommand();
@@ -64,6 +64,7 @@ function delegateCommand() {
 
   const toolConstraints = await tools[cmd].getToolConstraints(logMeta);
   const installCommands = await generateInstallCommands(toolConstraints, logMeta);
+
   let installSuccess;
   if (installCommands?.length) {
     installSuccess = installTools(installCommands, logMeta);
@@ -71,6 +72,7 @@ function delegateCommand() {
   // Pass on the command to the "real" tool
   const res = delegateCommand();
 
+  const remote = getRemoteValue();
   log({
     ...logMeta,
     remote,
@@ -82,4 +84,8 @@ function delegateCommand() {
   });
 
   shutdown(res.status);
+}
+
+(async function () {
+  await main();
 })();

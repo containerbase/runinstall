@@ -1,33 +1,68 @@
-const { spawnSync } = require("child_process");
+const git = require("./git");
 
-function getRemote() {
-  if (!process.env.RUNINSTALL_MATCH) {
-    return null;
-  }
-  try {
-    const res = spawnSync("git", ["remote", "get-url", "origin"], {
-      encoding: "utf-8",
-      shell: true,
-    });
-    return res.stdout.replace(/\n$/, "");
-  } catch (err) {
-    // do nothing
-  }
-  return null;
-}
+let enableNoGit = process.env.RUNINSTALL_ENABLE_NO_GIT;
+let riMatch = process.env.RUNINSTALL_MATCH; // deprecated
+let includes = process.env.RUNINSTALL_INCLUDES;
+let excludes = process.env.RUNINSTALL_EXCLUDES;
 
-function matchPath(remote) {
-  if (!process.env.RUNINSTALL_MATCH) {
+let remote = undefined;
+
+function skipToolInstall() {
+  if (enableNoGit === 'true') {
+    // always enabled without a git check
     return false;
   }
-  if (!remote) {
-    return false;
+
+  if (!includes) {
+    includes = riMatch; // backward compatability
   }
-  const paths = process.env.RUNINSTALL_MATCH.split(",");
-  if (paths.some((p) => remote.includes(p))) {
+  if (!includes) {
+    // includes is not defined, nothing to match
     return true;
   }
-  return false;
+
+  remote = git.getRemote();
+  if (!remote) {
+    // could not find remote
+    return true;
+  }
+
+  if (excludes) {
+    const excPaths = excludes.split(",");
+    if (excPaths.some((p) => remote.includes(p))) {
+      // This means runinstall should not be active on this repo
+      return true;
+    }
+  }
+
+  const incPaths = includes.split(",");
+  const matchFound = incPaths.some((p) => remote.includes(p));
+  return !matchFound;
 }
 
-module.exports = { getRemote, matchPath };
+function getRemoteValue() {
+  return remote;
+}
+
+// setters for testing
+function setEnableNoGit(value) {
+  enableNoGit = value;
+}
+function setRiMatch(value) {
+  riMatch = value;
+}
+function setIncludes(value) {
+  includes = value;
+}
+function setExcludes(value) {
+  excludes = value;
+}
+
+module.exports = {
+  setEnableNoGit,
+  getRemoteValue,
+  setRiMatch,
+  setIncludes,
+  setExcludes,
+  skipToolInstall
+};

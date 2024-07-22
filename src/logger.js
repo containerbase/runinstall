@@ -56,18 +56,19 @@ function log(...args) {
 
 function shutdown(status) {
   // Flush the logs if necessary, then exit
-  const transport =
-    logger &&
-    logger.transports &&
-    logger.transports.find((t) => t.name === "runinstall");
-  if (transport) {
-    transport.kthxbye(function () {
-      // Wait for log flushing before shutting down
-      process.exit(status);
-    });
-  } else {
+  if (!logger || !logger.transports) {
     process.exit(status);
   }
+
+  const transport = logger.transports.find((t) => t.name === "runinstall");
+  if (!transport) {
+    process.exit(status);
+  }
+
+  transport.kthxbye(function () {
+    // Wait for log flushing before shutting down
+    process.exit(status);
+  });
 }
 
 module.exports = {
