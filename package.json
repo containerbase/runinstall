@@ -6,7 +6,8 @@
     "build-binary": "pkg src/index.js --target node18-linux-x64  --output dist/runinstall",
     "build-image": "docker build . -t containerbase/runinstall:latest",
     "jest": "jest --env=node --passWithNoTests",
-    "prettier": "prettier --list-different \"**/*.{ts,js,mjs,json,md}\""
+    "prettier": "prettier --list-different \"**/*.{ts,js,mjs,json,md}\"",
+    "start":  "node src/index.js --version"
   },
   "author": "Rhys Arkins <rhys@arkins.net>",
   "license": "AGPL-3.0-only",
