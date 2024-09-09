@@ -53,7 +53,7 @@ function extractGradleVersion(
 
 
 function  getToolConstraints(logMeta, inputFilePath) {
-    let gradleExtract;
+    let gradleVersion;
 
     let wrapperProps = 'gradle/wrapper/gradle-wrapper.properties';
     let gradleProps = 'gradle.properties';
@@ -70,41 +70,41 @@ function  getToolConstraints(logMeta, inputFilePath) {
 
     try {
         const props = fs.readFileSync(wrapperProps, "utf8");
-        gradleExtract = extractGradleWrapperVersion(logMeta, props ?? '');
+        gradleVersion = extractGradleWrapperVersion(logMeta, props ?? '');
         isWrapper = true;
     } catch (err) {
         // No file found
     }
 
-    if (!gradleExtract) {
+    if (!gradleVersion) {
         try {
              const props = fs.readFileSync(gradleProps, "utf8");
-             gradleExtract = extractGradleVersion(logMeta, props ?? '');
+             gradleVersion = extractGradleVersion(logMeta, props ?? '');
         } catch (err) {
             // No file found
         }
     }
 
-    if (!gradleExtract) {
+    if (!gradleVersion) {
         try {
             const bg = fs.readFileSync(buildGradle, "utf8");
-            gradleExtract = extractGradleVersion(logMeta, bg ?? '');
+            gradleVersion = extractGradleVersion(logMeta, bg ?? '');
         } catch (err) {
             // No file found
         }
     }
 
-    if (!gradleExtract) {
+    if (!gradleVersion) {
         log({ ...logMeta, cwd: process.cwd(), message: "Runinstall: No version found." });
         return [];
     }
 
-    const javaConstraint = getJavaConstraint(gradleExtract)
+    const javaConstraint = getJavaConstraint(gradleVersion)
 
     const toolConstraints = [];
     toolConstraints.push({source: 'gradle',constraint: javaConstraint, toolName: 'java'});
     if (!isWrapper) {
-        toolConstraints.push({source: 'gradle',constraint: gradleExtract, toolName: 'gradle'});
+        toolConstraints.push({source: 'gradle',constraint: gradleVersion, toolName: 'gradle'});
     }
 
     return toolConstraints;
