@@ -27,7 +27,7 @@ RUN install-tool pipenv
 ARG POETRY_VERSION=1.8.2
 RUN install-tool poetry
 
-# renovate: datasource=github-releases depName=poetry packageName=python-poetry/poetry
+# renovate: datasource=gradle-version depName=gradle versioning=gradle
 ARG GRADLE_VERSION=6.7.1
 RUN install-tool gradle
 
