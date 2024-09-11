@@ -2,11 +2,19 @@
 
 Runinstall is a tool that detects the project version and installs it dynamically.
 
-## Logic
-
 Runinstall has the propriety code to extract the constraints from the supported tools, and it utilizes renovate and install-tool in order to generate commands and install them.
 
-Reference: https://github.com/renovatebot/renovate/blob/main/lib/util/exec/containerbase.ts 
+References:
+1. Generate commands https://github.com/renovatebot/renovate/blob/main/lib/util/exec/containerbase.ts
+2. Install tool https://github.com/containerbase/base
+
+Runinstall Currently supported tools:
+1. mvn
+2. pipenv
+3. poetry
+4. gradle
+
+## Logic
 
 ### Path matching
 
@@ -28,13 +36,7 @@ mvn --version
 
 ### Tool name checking
 
-Runinstall Currently supported tools:
-1. mvn
-2. pipenv
-3. poetry
-4. gradle
-
-If any other command is used, the command will exit with an error.
+If any other command than the supported tools is used, the command will exit with an error.
 
 For local development, the command can be overridden/hardcoded with `RUNINSTALL_CMD`.
 
