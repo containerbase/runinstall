@@ -10,6 +10,13 @@ const DISTRIBUTION_URL_REGEX = regEx(
 
 const GRADLE_VERSION_REGEX = regEx("gradleVersion\\s*=\\s*[\"']?\\s*(?<version>\\d+\\.\\d+(?:\\.\\d+)?(?:-\\w+)*)[\"']?");
 
+/**
+ * Extracts gradle version using DISTRIBUTION_URL_REGEX from a given gradle wrapper file.
+ *
+ * @param {Object} logMeta
+ * @param {string} fileContent
+ * @returns {undefined | string} gradle version or undefined if not found
+ */
 function extractGradleWrapperVersion(
     logMeta,
     fileContent,
@@ -27,10 +34,16 @@ function extractGradleWrapperVersion(
         'Gradle wrapper version was not found in gradle-wrapper.properties',
     );
 
-    return null;
+    return undefined;
 }
 
-// returns url + version or null
+/**
+ * Extracts gradle version using GRADLE_VERSION_REGEX from a given file text.
+ *
+ * @param {Object} logMeta
+ * @param {string} fileContent
+ * @returns {undefined | string} gradle version or undefined if not found
+ */
 function extractGradleVersion(
     logMeta,
     fileContent,
@@ -48,10 +61,23 @@ function extractGradleVersion(
         'Gradle version was not found in build.gradle',
     );
 
-    return null;
+    return undefined;
 }
 
+/**
+ * @typedef {Object} ToolConstraint
+ * @property {string} source - The source of the tool, e.g., 'gradle'.
+ * @property {string} constraint - The constraint associated with the tool.
+ * @property {string} toolName - The name of the tool, e.g., 'gradle'.
+ */
 
+/**
+ * Generates tool constraints based on the Gradle version found in configuration files.
+ *
+ * @param {Object} logMeta - Metadata for logging purposes.
+ * @param {string} [inputFilePath] - Optional path to a file used for testing purposes.
+ * @returns {ToolConstraint[]} - An array of tool constraints.
+ */
 function  getToolConstraints(logMeta, inputFilePath) {
     let gradleVersion;
 
@@ -68,30 +94,20 @@ function  getToolConstraints(logMeta, inputFilePath) {
 
     let isWrapper = false;
 
-    try {
+    if (fs.existsSync(wrapperProps)) {
         const props = fs.readFileSync(wrapperProps, "utf8");
         gradleVersion = extractGradleWrapperVersion(logMeta, props ?? '');
         isWrapper = true;
-    } catch (err) {
-        // No file found
     }
 
-    if (!gradleVersion) {
-        try {
-             const props = fs.readFileSync(gradleProps, "utf8");
-             gradleVersion = extractGradleVersion(logMeta, props ?? '');
-        } catch (err) {
-            // No file found
-        }
+    if (!gradleVersion && fs.existsSync(gradleProps)) {
+        const props = fs.readFileSync(gradleProps, "utf8");
+        gradleVersion = extractGradleVersion(logMeta, props ?? '');
     }
 
-    if (!gradleVersion) {
-        try {
-            const bg = fs.readFileSync(buildGradle, "utf8");
-            gradleVersion = extractGradleVersion(logMeta, bg ?? '');
-        } catch (err) {
-            // No file found
-        }
+    if (!gradleVersion && fs.existsSync(buildGradle)) {
+        const bg = fs.readFileSync(buildGradle, "utf8");
+        gradleVersion = extractGradleVersion(logMeta, bg ?? '');
     }
 
     if (!gradleVersion) {
