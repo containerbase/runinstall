@@ -12,7 +12,7 @@ Reference: https://github.com/renovatebot/renovate/blob/main/lib/util/exec/conta
 
 - `RUNINSTALL_ENABLE_NO_GIT`: This variable is used when running locally. if set to `true`, It allows running tool update without any git repository. it will bypass `RUNINSTALL_INCLUDES` and `RUNINSTALL_EXCLUDES`
 - `RUNINSTALL_INCLUDES`: This variable indicates which repositories to detect. accepts a comma seperated list of strings for repository URLs (fallback to `RUNINSTALL_MATCH`)
-- `RUNINSTALL_EXCLUDES`: This variable indicates which repositories to exclude. a comma seperated list of strings for repository URLs
+- `RUNINSTALL_EXCLUDES`: This variable indicates which repositories to exclude. accepts a comma seperated list of strings for repository URLs
 
 If `RUNINSTALL_INCLUDES` is undefined, or does not match, or `RUNINSTALL_EXCLUDES` is matched, then all logic will be skipped. 
 The command will be passed through to `/usr/local/bin/${cmd}`.
