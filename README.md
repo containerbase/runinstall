@@ -2,7 +2,7 @@
 
 Runinstall is a tool that detects the project version and installs it dynamically.
 
-Runinstall has the propriety code to extract the constraints from the supported tools, and it utilizes renovate and install-tool in order to generate commands and install them.
+Runinstall extracts version constraints of package managers, and utilizes Renovate and install-tool to generate commands to install the tool version that the project requires.
 
 References:
 1. Generate commands https://github.com/renovatebot/renovate/blob/main/lib/util/exec/containerbase.ts
