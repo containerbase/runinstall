@@ -81,7 +81,7 @@ Finally, runinstall will execute the desired command - passing all stdio through
 
 ## Logging
 
-Runinstall does not log to standard output or error, because doing so might interfere with the Unified Agent's parsing of package manager output.
+Runinstall does not log to standard output or error, because doing so will pollute the command output leading to text parsing errors.
 Instead, Runinstall sends its own logs to a remote CloudWatch Log Group if configured.
 
 Configuration:
