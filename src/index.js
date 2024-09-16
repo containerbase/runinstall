@@ -4,6 +4,7 @@ process.env.SKIP_VERSION = "1";
 const { spawnSync } = require("child_process");
 const os = require("os");
 
+const gradle = require("./tools/gradle");
 const mvn = require("./tools/mvn");
 const pipenv = require("./tools/pipenv");
 const poetry = require("./tools/poetry");
@@ -17,6 +18,7 @@ const tools = {
   mvn,
   pipenv,
   poetry,
+  gradle,
 };
 
 const cmd = process.env.RUNINSTALL_CMD || process.argv0;

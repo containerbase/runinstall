@@ -1,5 +1,7 @@
 # Testing
 
+Most of the code logic can be tested using unit tests.
+
 The best way to test changes is against real repositories, using a built image.
 
 ## Building the image

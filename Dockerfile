@@ -27,11 +27,17 @@ RUN install-tool pipenv
 ARG POETRY_VERSION=1.8.2
 RUN install-tool poetry
 
+# the gradle version should be compatible with java version
+# renovate: datasource=gradle-version depName=gradle versioning=gradle
+ARG GRADLE_VERSION=6.7.1
+RUN install-tool gradle
+
 USER 1000
 
 COPY dist/runinstall /home/ubuntu/bin/runinstall
 RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/mvn
 RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/pipenv
 RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/poetry
+RUN ln -s /home/ubuntu/bin/runinstall /home/ubuntu/bin/gradle
 
 USER 0
