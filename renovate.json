@@ -1,12 +1,19 @@
 {
-  "extends": ["github>containerbase/.github"],
-  "baseBranches": ["dev", "main"],
+  "extends": [
+    "github>containerbase/.github"
+  ],
+  "baseBranches": [
+    "dev",
+    "main"
+  ],
   "dependencyDashboardApproval": true,
   "packageRules": [
     {
-      "matchPackagePatterns": ["*"],
       "automerge": false,
-      "prCreation": "immediate"
+      "prCreation": "immediate",
+      "matchPackageNames": [
+        "*"
+      ]
     }
   ]
 }
